@@ -321,3 +321,57 @@ TAG: Second Subscriber -> 3
 TAG: First Subscriber -> 5
 TAG: Second Subscriber -> 5
 ```
+
+<h3> ConnectableObservable </h3>
+
+Cold Observable이긴 한데 여러명의 구독자들에게 쏴주고 싶을 때!
+
+```
+val dataList = listOf("1", "3", "5")
+
+// Cold Observable 만들기
+val observableData = Observable.interval(100L, TimeUnit.MILLISECONDS)
+    .map(Long::intValue)
+    .map { dataList[it] }
+    .take(dataList.length)
+
+// ConnectableObservable 만들기
+val dataSource = observableData.publish()
+
+// subscribe(ConnectableObservable, 얘에다가 연결만)
+dataSource.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+dataSource.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// ConnectableObservable과 연결
+dataSource.connect()
+
+// Hot Observable의 특성 -> 일정 시간이 지나면 그 이후로 발행된 데이터만 받아올 수 있음
+Thread.sleep(250L)
+dataSource.subscribe { Log.d(TAG, "Third Subscriber -> $it") }
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: Second Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+TAG: Third Subscriber -> 5
+```
+
+<h2> 한 판 정리 </h2>
+
+<h3> 데이터 발행자(DataSource) </h3>
+- Observable
+- Sigle
+- Maybe
+- Subject
+- Completable
+
+<h3> 데이터 수신자 </h3>
+- 구독자(Subscriber)
+- 옵저버(Observer)
+- 소비자(Consumer)
+    - Java 8과 같은 이름을 사용하기 위해
+
+
