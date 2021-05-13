@@ -1,4 +1,4 @@
-<h1 align="center"> CrashRxAndroid </h1>
+<h1 align="center"> 👊🏾Crash👊🏾 ✨RxJava + RxAndroid✨ </h1>
 
 <h2> Study On My Way (feat. Marble Diagram) </h2>
 
@@ -168,3 +168,30 @@ Observable.fromArray(source)
 
 Maybe 클래스는 데이터를 하나만 발행하지만 0개도 발행할 수 있음!<br/>
 즉, onComplete 메서드를 하나 더 추가해서 구현하는 형식
+
+<h2> Cold Observavbles vs Hot Observables </h2>
+
+<h4> Cold Observavbles </h4>
+
+- subscribe 함수를 호출하여 구독을 해야 데이터가 발행됨
+- 웹/DB/서버 요청과 같은 URL(데이터) 지정하고 요청을 보내서 결과를 받아오는 로직은 Cold Observable로 구현
+
+<h4> Hot Observables </h4>
+
+- 구독자가 있던 없던 데이터가 계속 발행되는 Observable
+    - 여러 구독자를 동시에 구독할 수 있음
+- 주식, 마우스(키보드) Event, 센서(주식) 데이터 등
+    - 실시간으로 계속 받아와서 표시할 때에는 Hot Observable로 구현
+- 배압(BackPressure)을 무조건 고려해야됨
+    - 발행속도와 구독속도의 차이가 클 때 발생
+
+<h3> Switch Cold to Hot </h3>
+
+- Subject 클래스
+- ConnectableObservable
+
+<h3> Subject 클래스 </h3>
+
+Subject 클래스는 구독자와 Cold Observable의 특성이 모두 공존한다
+- 데이터를 발행할 수도 있고, 발행된 데이터를 바로 처리할 수도 있음
+
