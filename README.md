@@ -69,5 +69,44 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
 
 (에반데) 위와 같이 순서대로 데이터들을 받아오고 Observable Timeline(마블 다이어그램 위쪽 선)으로 발행
 
+<h3> ``create()`` vs ``just()`` </h3>
+
+- just: onNext, onComplete, onError 커스텀할 필요없음
+- create: 개발자가 직접 콜백을 설정
+
+```kotlin
+        val taskObservableCreate = Observable
+            .create { emitter: ObservableEmitter<Task> ->
+                emitter.onNext(Task(description = "", isComplete = false, priority = 0))
+                // 끝내려면 onComplete 호출
+                emitter.onComplete()
+            }
+            .subscribe { Log.d(TAG, "$it") }
+```
+
+<h4> RxJava is Declarative </h4>
+
+내가 코드로 작성하는 것이 어떻게 작동되는 지를 명세하는 것이 아니라,
+무엇인지 명세해주는 방식, 이 객체가 어떤 객체인지 정의함
+
+<h3> ``subscribe()`` 함수 </h3>
+
+Observable은 Factory로 객체를 정의하고 subscribe 함수로 데이터를 발행시킨다
+
+```java
+Disposable disposable() -> onError 이벤트 발생 시 Exception throw, 디버깅할 때 사용
+Disposable subscribe(
+    Consumer <? super T> onNext,
+    Consumer <? super java.lang.Throwable> onError,
+    Action onComplete
+) -> 이벤트 처리
+```
+
+<h3> Disposable </h3>
+
+onComplete 이벤트가 발생되었다면 dispose는 호출할 필요가 없는데...
+-> 만약 처리가 안되면 메모리 릭 발생이 되니 CompositeDisposable Class 활용해서 객체가 destroy될 때 관계 해제
+
+
 
 
