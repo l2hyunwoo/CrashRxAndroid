@@ -261,3 +261,32 @@ TAG: Second Subscriber -> 3
 TAG: First Subscriber -> 5
 TAG: Second Subscriber -> 5
 ```
+
+<h4> PublisherSubject </h4>
+
+가장 일반적인 Subject 클래스, ``subscribe()`` 함수를 호출하면 값을 발행하기 시작한다.
+이후에 구독을 해도 최근의 값을 받아오지 않음(BehaviorSubject와 다른 점)
+
+```kotlin
+val subject = PublisherSubject.create<String>()
+
+// 구독 시작
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
