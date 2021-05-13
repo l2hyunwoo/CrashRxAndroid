@@ -195,3 +195,38 @@ Maybe 클래스는 데이터를 하나만 발행하지만 0개도 발행할 수 
 Subject 클래스는 구독자와 Cold Observable의 특성이 모두 공존한다
 - 데이터를 발행할 수도 있고, 발행된 데이터를 바로 처리할 수도 있음
 
+- AsyncySubject
+- BehaviorSubject
+- PublishSubject
+- ReplaySubject
+
+<h4> AsyncSubject </h4>
+
+완료되기 전 **마지막** 데이터에만 관심, 이전 데이터는 무시
+
+```kotlin
+// AsyncSubject 객체 생성
+val subject = AsyncSubject.create<String>()
+
+// Subject의 구독자 설정
+subject.subscribe { Log.d(TAG, it) }
+
+// Subject 발행(이건 무시)
+subject.onNext("Hi")
+subject.onNext("Hello")
+
+// Subject의 구독자 설정
+subject.subscribe { Log.d(TAG, "${it + " Second}") }
+
+// Subject 발행(이건 무시)
+subject.onNext("HyunWoo")
+subject.onComplete()
+subject.onNext("Fake")
+subject.subscribe { Log.d(TAG, "${it + " Third}") }
+
+// 최종 결과, onComplete가 호출되기 직전의 마지막 결과만 처리, 이후 onNext는 Fake
+// onComplete가 호출된 이후의 subscriber는 최종값만 가져옴
+TAG: HyunWoo
+TAG: HyunWoo Second
+TAG: HyunWoo Third
+```
