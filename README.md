@@ -362,6 +362,7 @@ TAG: Third Subscriber -> 5
 <h2> 한 판 정리 </h2>
 
 <h3> 데이터 발행자(DataSource) </h3>
+
 - Observable
 - Sigle
 - Maybe
@@ -369,6 +370,7 @@ TAG: Third Subscriber -> 5
 - Completable
 
 <h3> 데이터 수신자 </h3>
+
 - 구독자(Subscriber)
 - 옵저버(Observer)
 - 소비자(Consumer)
