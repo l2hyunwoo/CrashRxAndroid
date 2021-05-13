@@ -109,7 +109,18 @@ Disposable subscribe(
 ) -> 이벤트 처리
 ```
 
-<h3> Disposable </h3>
+<h3> from~ : Observable Factory Method </h3>
+
+- fromArray, fromIterable
+    - Array, ArrayList, Queue 등 Java(Kotlin) Collections에서 제공하는 자료구조 활용 Observable 생성
+- fromCallable
+    - 비동기 처리 Wrapper Class인 Callable의 return 값을 활용하여 Observable 생성
+- fromFuture
+    - future의 return 값을 활용하여 Observable 생성
+- fromPublisher
+    - publisher(Java 9) 활용하여 Observable 생성
+
+<h2> Disposable </h2>
 
 onComplete 이벤트가 발생되었다면 dispose는 호출할 필요가 없는데...<br/>
 -> 만약 처리가 안되면 메모리 릭 발생이 되니 CompositeDisposable Class 활용해서 객체가 destroy될 때 관계 해제
