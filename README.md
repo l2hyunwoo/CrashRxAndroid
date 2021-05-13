@@ -55,5 +55,19 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
 - fromArray(), fromIterable(), fromCallable(), fromFuture(), fromPublisher()
 - interval(), range(), timer(), defer()
 
+<h3> ``just()`` </h3>
+
+```java
+    public static <T> Observable<T> just(T item1, ...,  T item10) {
+        ObjectHelper.requireNonNull(item1, "item1 is null");
+        ...
+        ObjectHelper.requireNonNull(item10, "item10 is null");
+
+        return fromArray(item1, item2, item3, item4, item5, item6, item7, item8, item9, item10);
+    }
+````
+
+(에반데) 위와 같이 순서대로 데이터들을 받아오고 Observable Timeline(마블 다이어그램 위쪽 선)으로 발행
+
 
 
