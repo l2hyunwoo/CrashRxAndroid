@@ -290,3 +290,34 @@ TAG: First Subscriber -> 3
 TAG: First Subscriber -> 5
 TAG: Second Subscriber -> 5
 ```
+
+<h4> ReplaySubject : 취급 주의 </h4>
+
+데이터의 처음부터 끝가지 발행하는 것을 보장해줌
+모든 데이터 저장할 때 메모리 릭이 나는 가능서옫 염두해야 됨
+
+```kotlin
+val subject = ReplaySubject.create<String>()
+
+// 구독 시작
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 1
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
