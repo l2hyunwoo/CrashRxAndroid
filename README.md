@@ -84,6 +84,12 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
             .subscribe { Log.d(TAG, "$it") }
 ```
 
+<h4> 주의점 </h4>
+- Observable이 dispose될 대 콜백 해지(memory leak)
+- 구독하는 동안에만 onNext, onComplete 호출
+- 에러는 오직 onError에서만
+- BackPressure는 직접 처리
+
 <h4> RxJava is Declarative </h4>
 
 내가 코드로 작성하는 것이 어떻게 작동되는 지를 명세하는 것이 아니라,
