@@ -125,6 +125,46 @@ Disposable subscribe(
 onComplete 이벤트가 발생되었다면 dispose는 호출할 필요가 없는데...<br/>
 -> 만약 처리가 안되면 메모리 릭 발생이 되니 CompositeDisposable Class 활용해서 객체가 destroy될 때 관계 해제
 
+<h2> Single: Special Type of Observable </h2>
 
+Observable은 데이터 무한 발행 쌉가능,<br/>
+But, ``Single``은 오로지 하나!
 
+<h3> How to create it </h3>
 
+```kotlin
+// 1. Observable -> Single
+Single.fromObservable(source)
+    // Single<T>
+    .subscrbe(...)
+
+// 2. single()
+Observable.just("Hello! World!")
+    .single("Default value")
+    // Single<T>
+    .subscribe(...)
+
+// 3. first()
+Observable.fromArray(source)
+    .first("default")
+    // Single<T>
+    .subscribe(...)
+
+// 4. empty() -> single()
+Observable.empty()
+    .single("default")
+    // Single<T>
+    .subscribe(...)
+
+// 5. take(1) -> single()
+Observable.fromArray(source)
+    .take(1)
+    .single("default")
+    // Single<T>
+    .subscribe(...)
+```
+
+<h2> Maybe = Single + onComplete </h2>
+
+Maybe 클래스는 데이터를 하나만 발행하지만 0개도 발행할 수 있음!<br/>
+즉, onComplete 메서드를 하나 더 추가해서 구현하는 형식
