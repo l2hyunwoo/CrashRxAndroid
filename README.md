@@ -13,11 +13,11 @@
 
 <h2> Observable </h2>
 
-데이터 흐름에 맞게 **알림(Based on Observer Pattern)**을 보내 **Subscriber**가 데이터를 처리할 수 있도록 한다
+데이터 흐름에 맞게 <b>알림(Based on Observer Pattern)</b>을 보내 **Subscriber**가 데이터를 처리할 수 있도록 한다
 
 <h3> Observable Class </h3>
 
-Observable은 옵저버 패턴을 구현한다. 객체의 상태 변화를 관찰하는 관찰자 목록을 객체에 등록하고,
+Observable은 옵저버 패턴을 구현한다. 객체의 상태 변화를 관찰하는 관찰자 목록을 객체에 등록하고,<br/>
 상태 변화가 있을 때마다 메서드를 호출 -> 관찰자에게 변화를 통지
 
 <h4> Why Observable? </h4>
@@ -55,7 +55,7 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
 - fromArray(), fromIterable(), fromCallable(), fromFuture(), fromPublisher()
 - interval(), range(), timer(), defer()
 
-<h3> ``just()`` </h3>
+<h3> just() </h3>
 
 ```java
     public static <T> Observable<T> just(T item1, ...,  T item10) {
@@ -69,7 +69,7 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
 
 (에반데) 위와 같이 순서대로 데이터들을 받아오고 Observable Timeline(마블 다이어그램 위쪽 선)으로 발행
 
-<h3> ``create()`` vs ``just()`` </h3>
+<h3> create() vs just() </h3>
 
 - just: onNext, onComplete, onError 커스텀할 필요없음
 - create: 개발자가 직접 콜백을 설정
@@ -85,17 +85,18 @@ Observable은 객체를 생성하지 않고 Factory 패턴으로 생성
 ```
 
 <h4> 주의점 </h4>
+
 - Observable이 dispose될 대 콜백 해지(memory leak)
 - 구독하는 동안에만 onNext, onComplete 호출
 - 에러는 오직 onError에서만
 - BackPressure는 직접 처리
 
-<h4> RxJava is Declarative </h4>
+<h4> TMI) RxJava is Declarative </h4>
 
-내가 코드로 작성하는 것이 어떻게 작동되는 지를 명세하는 것이 아니라,
+내가 코드로 작성하는 것이 어떻게 작동되는 지를 명세하는 것이 아니라,<br/>
 무엇인지 명세해주는 방식, 이 객체가 어떤 객체인지 정의함
 
-<h3> ``subscribe()`` 함수 </h3>
+<h3> subscribe() 함수 </h3>
 
 Observable은 Factory로 객체를 정의하고 subscribe 함수로 데이터를 발행시킨다
 
@@ -110,7 +111,7 @@ Disposable subscribe(
 
 <h3> Disposable </h3>
 
-onComplete 이벤트가 발생되었다면 dispose는 호출할 필요가 없는데...
+onComplete 이벤트가 발생되었다면 dispose는 호출할 필요가 없는데...<br/>
 -> 만약 처리가 안되면 메모리 릭 발생이 되니 CompositeDisposable Class 활용해서 객체가 destroy될 때 관계 해제
 
 
