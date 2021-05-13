@@ -1,4 +1,4 @@
-<h1 align="center"> CrashRxAndroid </h1>
+<h1 align="center"> 👊🏾Crash👊🏾 ✨RxJava + RxAndroid✨ </h1>
 
 <h2> Study On My Way (feat. Marble Diagram) </h2>
 
@@ -168,3 +168,210 @@ Observable.fromArray(source)
 
 Maybe 클래스는 데이터를 하나만 발행하지만 0개도 발행할 수 있음!<br/>
 즉, onComplete 메서드를 하나 더 추가해서 구현하는 형식
+
+<h2> Cold Observavbles vs Hot Observables </h2>
+
+<h4> Cold Observavbles </h4>
+
+- subscribe 함수를 호출하여 구독을 해야 데이터가 발행됨
+- 웹/DB/서버 요청과 같은 URL(데이터) 지정하고 요청을 보내서 결과를 받아오는 로직은 Cold Observable로 구현
+
+<h4> Hot Observables </h4>
+
+- 구독자가 있던 없던 데이터가 계속 발행되는 Observable
+    - 여러 구독자를 동시에 구독할 수 있음
+- 주식, 마우스(키보드) Event, 센서(주식) 데이터 등
+    - 실시간으로 계속 받아와서 표시할 때에는 Hot Observable로 구현
+- 배압(BackPressure)을 무조건 고려해야됨
+    - 발행속도와 구독속도의 차이가 클 때 발생
+
+<h3> Switch Cold to Hot </h3>
+
+- Subject 클래스
+- ConnectableObservable
+
+<h3> Subject 클래스 </h3>
+
+Subject 클래스는 구독자와 Cold Observable의 특성이 모두 공존한다
+- 데이터를 발행할 수도 있고, 발행된 데이터를 바로 처리할 수도 있음
+
+- AsyncySubject
+- BehaviorSubject
+- PublishSubject
+- ReplaySubject
+
+<h4> AsyncSubject </h4>
+
+완료되기 전 **마지막** 데이터에만 관심, 이전 데이터는 무시
+
+```kotlin
+// AsyncSubject 객체 생성
+val subject = AsyncSubject.create<String>()
+
+// Subject의 구독자 설정
+subject.subscribe { Log.d(TAG, it) }
+
+// Subject 발행(이건 무시)
+subject.onNext("Hi")
+subject.onNext("Hello")
+
+// Subject의 구독자 설정
+subject.subscribe { Log.d(TAG, "${it + " Second}") }
+
+// Subject 발행(이건 무시)
+subject.onNext("HyunWoo")
+subject.onComplete()
+subject.onNext("Fake")
+subject.subscribe { Log.d(TAG, "${it + " Third}") }
+
+// 최종 결과, onComplete가 호출되기 직전의 마지막 결과만 처리, 이후 onNext는 Fake
+// onComplete가 호출된 이후의 subscriber는 최종값만 가져옴
+TAG: HyunWoo
+TAG: HyunWoo Second
+TAG: HyunWoo Third
+```
+
+<h4> BehaviorSubject </h4>
+
+구독을 하면 가장 최근 값 혹은 기본 값을 넘겨 받음
+
+```kotlin
+// BehaviorSubject 생성
+val subject = BehaviorSubject.createDefault<String>("DEFAULT")
+
+// 디폴트 값 출력됨(처음에는)
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 6
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
+
+<h4> PublisherSubject </h4>
+
+가장 일반적인 Subject 클래스, ``subscribe()`` 함수를 호출하면 값을 발행하기 시작한다.
+이후에 구독을 해도 최근의 값을 받아오지 않음(BehaviorSubject와 다른 점)
+
+```kotlin
+val subject = PublisherSubject.create<String>()
+
+// 구독 시작
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
+
+<h4> ReplaySubject : 취급 주의 </h4>
+
+데이터의 처음부터 끝가지 발행하는 것을 보장해줌
+모든 데이터 저장할 때 메모리 릭이 나는 가능서옫 염두해야 됨
+
+```kotlin
+val subject = ReplaySubject.create<String>()
+
+// 구독 시작
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 1
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
+
+<h3> ConnectableObservable </h3>
+
+Cold Observable이긴 한데 여러명의 구독자들에게 쏴주고 싶을 때!
+
+```
+val dataList = listOf("1", "3", "5")
+
+// Cold Observable 만들기
+val observableData = Observable.interval(100L, TimeUnit.MILLISECONDS)
+    .map(Long::intValue)
+    .map { dataList[it] }
+    .take(dataList.length)
+
+// ConnectableObservable 만들기
+val dataSource = observableData.publish()
+
+// subscribe(ConnectableObservable, 얘에다가 연결만)
+dataSource.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+dataSource.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// ConnectableObservable과 연결
+dataSource.connect()
+
+// Hot Observable의 특성 -> 일정 시간이 지나면 그 이후로 발행된 데이터만 받아올 수 있음
+Thread.sleep(250L)
+dataSource.subscribe { Log.d(TAG, "Third Subscriber -> $it") }
+
+// 결과
+TAG: First Subscriber -> 1
+TAG: Second Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+TAG: Third Subscriber -> 5
+```
+
+<h2> 한 판 정리 </h2>
+
+<h3> 데이터 발행자(DataSource) </h3>
+- Observable
+- Sigle
+- Maybe
+- Subject
+- Completable
+
+<h3> 데이터 수신자 </h3>
+- 구독자(Subscriber)
+- 옵저버(Observer)
+- 소비자(Consumer)
+    - Java 8과 같은 이름을 사용하기 위해
+
+
