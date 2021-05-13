@@ -230,3 +230,34 @@ TAG: HyunWoo
 TAG: HyunWoo Second
 TAG: HyunWoo Third
 ```
+
+<h4> BehaviorSubject </h4>
+
+구독을 하면 가장 최근 값 혹은 기본 값을 넘겨 받음
+
+```kotlin
+// BehaviorSubject 생성
+val subject = BehaviorSubject.createDefault<String>("DEFAULT")
+
+// 디폴트 값 출력됨(처음에는)
+subject.subscribe { Log.d(TAG, "First Subscriber -> $it") }
+
+// 발행
+subject.onNext("1")
+subject.onNext("3")
+
+// 구독자 하나 더 추가
+subject.subscribe { Log.d(TAG, "Second Subscriber -> $it") }
+
+// 발행
+subject.onNext("5")
+subject.onComplete()
+
+// 결과
+TAG: First Subscriber -> 6
+TAG: First Subscriber -> 1
+TAG: First Subscriber -> 3
+TAG: Second Subscriber -> 3
+TAG: First Subscriber -> 5
+TAG: Second Subscriber -> 5
+```
